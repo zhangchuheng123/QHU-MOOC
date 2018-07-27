@@ -1,7 +1,5 @@
 # QHU-MOOC
 
-旧版的README参见[这里](README_OLD.md)
-
 ## 简述
 
 该项目是在青海大学暑期社会实践期间的工作，任务由青海大学计算机技术与应用系提出，主要目的是为其程序设计课程设计一套系统，供学生考试和作业使用。限于实践的时间，本系统旨在使用最为简单的方式来实现青海大学所需功能，并且为后续的拓展提供良好的基础。
@@ -46,19 +44,53 @@
 
 由于其QingdaoU OnlineJudge的网站部分的目标主要是进行OJ的训练和比赛，和我们的需求不符，因此，对于网站部分我决定使用Django从头开始进行开发。
 
-## 数据库设计
+## 框架设计
 
-主要设计了用户(MyUser)、题库(Problem)、考试(Exam)、考试结果(ExamResult)几种数据类型。具体结构参见``backend/models.py``中的具体定义。
+限于时间，如果题库的管理和上传、用户的管理、测试点数据的管理和上传等都需要在网页端实现的话，开发量比较大，因此这里暂且主要采用文件的形式来管理题库、试题、测试点，而用户和用户的考试结果等必须使用数据库实现的才使用数据库实现。大致框架如下：
+
+```
+FILES
+    + data
+    |----+ problems
+    |    |----+ Choice.csv                  id  description     A   B   C   D       answer          tag
+    |    |----+ Completion.csv              id  description(with blank label)       answer          tag
+    |    |----+ TrueOrFalse.csv             id  description                         answer          tag
+    |    |----+ ProgramCorrection.csv       id  description     template            test_case_id    tag
+    |    |----+ ProgramReading.csv          id  description                         answer          tag
+    |    |----+ ProgramDesign.csv           id  description(include sample in/out)  test_case_id    tag
+    |----+ users
+    |    |----+ add_users.csv               username    password    classes     usertype
+    |----+ exams
+    |    |----+ exam_name.json              (num_choice point_choice tag_choice) * 5    classes
+    |----+ test_cases
+    |    |----+ <test_case_id>
+    |    |    |----+ 1.in
+    |    |    |----+ 1.out
+    |    |    |----+ info
+
+DB
+    users                   username    password    class   user_type
+    exam_result             username    examname   answers(JSON)     detail_scores(JSON)    score
+
+PAGES
+    index                   : after index visited check add_users.csv add and delete
+    login                   : login
+    logout                  : logout
+    changepassword          : change password 
+    examlist                : get user's class and find exams with this class
+    exam?id=<examname>      : load exam / judge and show exam result for this user
+    showall                 : show all the (user, exam) results for teachers
+    downloadscores          : download all the (user, exam) results as csv for teachers
+
+TEMPLATES
+    mosh from https://colorlib.com/
+```
 
 ## 操作说明
 
 ### 导入用户
 
-方式一：登陆后台增加用户
-
-![](docs/figures/add_user.png)
-
-方式二：放置``add_users.csv``到``data/users/``目录下，主要字段有``username, password, usertype, classes``，详细格式和文件编码参见``init.py``。放置在此文件夹下的文件会在第一次访问index页面之后被添加到数据库中，并且将改文件删除，**请做好文件备份**。
+放置``add_users.csv``到``data/users/``目录下，主要字段有``username, password, usertype, classes``，详细格式和文件编码参见``init.py``。放置在此文件夹下的文件会在第一次访问index页面之后被添加到数据库中，并且将改文件删除，**请做好文件备份**。
 
 ![](docs/figures/index.png)
 
@@ -70,17 +102,12 @@
 
 ### 添加考试
 
-方式一：登陆后台增加考试（推荐）
+放置``<exam_name>.json``到``data/exams/``目录下，主要字段见``init.py``，其主要规定了各类题型的题目数量和分数。
 
-![](docs/figures/add_exam.png)
-
-方式二：放置``<exam_name>.json``到``data/exams/``目录下，主要字段见``init.py``，其主要规定了各类题型的题目数量和分数。
 
 ### 管理题库
 
-方式一：登陆后台管理（推荐）
-
-方式二：题库是在``data/problems/``目录下的六个csv文件，文件的每一行代表一个题目，具体格式见``init.py``，其主要规定了题目的ID、题干、答案、题目所属班级。
+题库是在``data/problems/``目录下的六个csv文件，文件的每一行代表一个题目，具体格式见``init.py``，其主要规定了题目的ID、题干、答案、题目所属班级。
 * 登陆：主页登陆之后右上角会有登陆按钮，点击即可登陆。初始密码参见教师添加的初始密码。
 
 ![](docs/figures/login.png)
@@ -106,7 +133,7 @@
 ![](docs/figures/teacher_index.png)
 ![](docs/figures/showall.png)
 
-### 使用Jupyter来上传管理用户、测试点、题库和考试（同样可以用管理员页面来进行管理）
+### 这里暂时只能使用Jupyter来上传管理用户、测试点、题库和考试
 
 ![](docs/figures/jupyter.png)
 
@@ -178,7 +205,7 @@ Django里面提供了自带的User类``django.contrib.auth.models.User``，但�
 
 ## 未来改进
 
-1. 开发测试点管理的页面，把相应的内容挪到网页端完成，使用数据库储存全部数据；
+1. 开发用户管理、题库管理、考试管理、测试点管理的页面，把相应的内容全部挪到网页端完成，使用数据库储存全部数据；
 1. 增加考试和作业的个性化定制程度，比如可以随机组卷也可以固定选题组卷、学生可以使用不同的语言来进行编程、考试过程中的定时完成、作业中设置截止日期等；
 1. 更加友好的UI设计，比如考试结果展示的更加详细、题目的展示更加友好、浏览器中的代码提供语法高亮等；
 1. 增加更多慕课相关的功能，比如课程通知、课程讨论、课程笔记等；
