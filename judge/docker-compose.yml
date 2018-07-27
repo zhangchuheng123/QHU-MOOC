@@ -1,0 +1,26 @@
+version: "3"
+services:
+  judge-server:
+    image: registry.cn-hangzhou.aliyuncs.com/onlinejudge/judge_server
+    container_name: judge-server
+    restart: always
+    read_only: true
+    cap_drop:
+      - SETPCAP
+      - MKNOD
+      - NET_BIND_SERVICE
+      - SYS_CHROOT
+      - SETFCAP
+      - FSETID
+    tmpfs:
+      - /tmp
+    volumes:
+      - /home/jsjgpu3/zhangchuheng/QHU-MOOC/data/test_case:/test_case
+      - /home/jsjgpu3/zhangchuheng/QHU-MOOC/judge/data/judge_server/log:/log
+      - /home/jsjgpu3/zhangchuheng/QHU-MOOC/judge/data/judge_server/run:/judger
+    environment:
+      - SERVICE_URL=http://judge-server:8080
+      - BACKEND_URL=http://oj-backend:8000/api/judge_server_heartbeat/
+      - TOKEN=QHU_ADMIN_TOKEN
+    ports:
+      - "0.0.0.0:12358:8080"

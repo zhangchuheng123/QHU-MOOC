@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}考试/作业提交{% endblock %}
+{% block container %}
+
+<!-- ***** Breadcumb Area Start ***** -->
+<div class="mosh-breadcumb-area" style="background-image: url({% static "img/core-img/breadcumb.png" %});">
+<div class="container h-100">
+<div class="row h-100 align-items-center">
+<div class="col-12">
+    <div class="bradcumbContent">
+        <h2>考试/作业提交结果</h2>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<!-- ***** Breadcumb Area End ***** -->
+
+<!-- ***** Contact Area Start ***** -->
+<section class="contact-area section_padding_100">
+<div class="container">
+<div class="row">
+<!-- Contact Form Area -->
+<div class="col-12 col-md-8">
+<div class="contact-form-area">
+    
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> 
+    <div> <h2> 总分: {{ score }} </h2> </div>
+</div>
+
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> 
+    <div> <h2> 各题得分 </h2> </div>
+</div>
+
+{% if choice %}
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 选择题部分 </h3> </div>
+{% for c in choice %}
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
+    <div><p> 题库编号： {{ c.id }} </p></div>
+    <div><p> 得分/总分： {{ c.score }} / {{ c.full_score }} </p></div>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if completion %}
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 填空题部分 </h3> </div>
+{% for c in completion %}
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
+    <div><p> 题库编号： {{ c.id }} </p></div>
+    <div><p> 得分/总分： {{ c.score }} / {{ c.full_score }} </p></div>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if true_or_false %}
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 判断题部分 </h3> </div>
+{% for t in true_or_false %}
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
+    <div><p> 题库编号： {{ t.id }} </p></div>
+    <div><p> 得分/总分： {{ t.score }} / {{ t.full_score }} </p></div>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if program_correction %}
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 程序改错题部分 </h3> </div>
+{% for p in program_correction %}
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
+    <div><p> 题库编号： {{ p.id }} </p></div>
+    <div><p> 得分/总分： {{ p.score }} / {{ p.full_score }} </p></div>
+    <div><p> 程序运行结果： {{ p.result_infostr }} </p></div>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if program_reading %}
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 程序阅读题部分 </h3> </div>
+{% for p in program_reading %}
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
+    <div><p> 题库编号： {{ p.id }} </p></div>
+    <div><p> 得分/总分： {{ p.score }} / {{ p.full_score }} </p></div>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if program_design %}
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 程序设计题部分 </h3> </div>
+{% for p in program_design %}
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
+    <div><p> 题库编号： {{ p.id }} </p></div>
+    <div><p> 得分/总分： {{ p.score }} / {{ p.full_score }} </p></div>
+    <div><p> 程序运行结果： {{ p.result_infostr }} </p></div>
+    <div>
+</div>
+{% endfor %}
+{% endif %}
+    
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ***** Contact Area End ***** -->
+
+{% endblock %}

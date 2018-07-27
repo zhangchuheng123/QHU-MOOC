@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}青海大学程序设计课程{% endblock %}
+
+{% block container %}
+<!-- ***** Welcome Area Start ***** -->
+<section class="welcome_area clearfix" id="home" style="background-image: url({% static "img/bg-img/welcome-bg.png" %})">
+    <div class="hero-slides owl-carousel">
+        <!-- Single Hero Slides -->
+        <div class="single-hero-slide d-flex align-items-end justify-content-center">
+            <div class="hero-slide-content text-center">
+                <h2>青海大学程序设计课程</h2>
+                <h4>慕课和考试平台</h4>
+                <img class="slide-img" src="{% static "img/bg-img/device.png" %}" alt="">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ***** Welcome Area End ***** -->
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}考试/作业提交{% endblock %}
+{% block container %}
+
+<!-- ***** Breadcumb Area Start ***** -->
+<div class="mosh-breadcumb-area" style="background-image: url({% static "img/core-img/breadcumb.png" %});">
+<div class="container h-100">
+<div class="row h-100 align-items-center">
+<div class="col-12">
+    <div class="bradcumbContent">
+        <h2>成绩汇总</h2>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<!-- ***** Breadcumb Area End ***** -->
+
+<!-- ***** Blog Area Start ***** -->
+<section class="blog-area section_padding_100">
+<div class="container">
+<div class="row">
+<div class="col-12 col-md-8">
+<div class="mosh-blog-posts">
+    
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> 
+    <div class="xxxtable">
+    <div class="xxxrow header blue">
+        <div class="xxxcell">用户名</div>
+        <div class="xxxcell">考试名</div> 
+        <div class="xxxcell">总分</div>
+        <div class="xxxcell">选择题得分</div>
+        <div class="xxxcell">填空题得分</div> 
+        <div class="xxxcell">判断题得分</div>
+        <div class="xxxcell">程序改错题得分</div>
+        <div class="xxxcell">程序阅读题得分</div> 
+        <div class="xxxcell">程序设计题得分</div>
+    </div>
+    {% for r in result %}
+    <div class="xxxrow">
+        <div class="xxxcell" data-title="用户名">{{ r.username }}</div>
+        <div class="xxxcell" data-title="考试名">{{ r.examname }}</div> 
+        <div class="xxxcell" data-title="总分">{{ r.score }}</div>
+        <div class="xxxcell" data-title="选择题得分">{{ r.choice }}</div>
+        <div class="xxxcell" data-title="填空题得分">{{ r.completion }}</div> 
+        <div class="xxxcell" data-title="判断题得分">{{ r.true_or_false }}</div>
+        <div class="xxxcell" data-title="程序改错题得分">{{ r.program_correction }}</div>
+        <div class="xxxcell" data-title="程序阅读题得分">{{ r.program_reading }}</div> 
+        <div class="xxxcell" data-title="程序设计题得分">{{ r.program_design }}</div>
+    </div>
+    {% endfor %}
+    </div>
+</div>
+    
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> 
+        <a href="{% url 'downloadscores' %}">下载CSV成绩统计表</a> 
+    </div>
+    
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ***** Contact Area End ***** -->
+
+{% endblock %}

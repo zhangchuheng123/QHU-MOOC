@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}考试/作业列表{% endblock %}
+{% block container %}
+
+<!-- ***** Breadcumb Area Start ***** -->
+<div class="mosh-breadcumb-area" style="background-image: url({% static "img/core-img/breadcumb.png" %});">
+<div class="container h-100">
+<div class="row h-100 align-items-center">
+<div class="col-12">
+    <div class="bradcumbContent">
+        <h2>考试/作业列表</h2>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<!-- ***** Breadcumb Area End ***** -->
+
+{% if exam_list %}
+<section class="elements-area section_padding_100">
+<div class="container">
+	<ol>
+		{% for exam in exam_list %}
+		<li><img src="{% static "img/core-img/edit.png" %}" alt="" width="10">
+            <a href='/exam?id={{ exam.id }}'>{{ exam.name }}</a></li>
+		{% endfor %}
+	</ol>
+</div>
+</section>
+{% else %}
+<section class="elements-area section_padding_100">
+<div class="container">
+<div> 暂时没有考试/作业 </div>
+</div>
+</section>
+{% endif %}
+
+{% endblock %}

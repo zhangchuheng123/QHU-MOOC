@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}考试/作业{% endblock %}
+{% block container %}
+
+<!-- ***** Breadcumb Area Start ***** -->
+<div class="mosh-breadcumb-area" style="background-image: url({% static "img/core-img/breadcumb.png" %});">
+<div class="container h-100">
+<div class="row h-100 align-items-center">
+<div class="col-12">
+    <div class="bradcumbContent">
+        <h2>考试/作业</h2>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<!-- ***** Breadcumb Area End ***** -->
+
+<!-- ***** Contact Area Start ***** -->
+<section class="contact-area section_padding_100">
+<div class="container">
+<div class="row">
+<!-- Contact Form Area -->
+<div class="col-12 col-md-8">
+<div class="contact-form-area">
+{% if total_num_problems > 0 %}
+<form method="post">
+    {% csrf_token %}
+    
+    {% if choice %}
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 选择题 </h3> </div>
+    {% for c in choice %}
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
+        <p>{{ c.description }}</p>
+        <input type="radio" name="choice_{{ c.id }}" value="A" {% if c.answer == "A"%} checked {% endif %}> {{ c.A }} <br/>
+        <input type="radio" name="choice_{{ c.id }}" value="B" {% if c.answer == "B"%} checked {% endif %}> {{ c.B }} <br/>
+        <input type="radio" name="choice_{{ c.id }}" value="C" {% if c.answer == "C"%} checked {% endif %}> {{ c.C }} <br/>
+        <input type="radio" name="choice_{{ c.id }}" value="D" {% if c.answer == "D"%} checked {% endif %}> {{ c.D }} <br/>
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+    {% if completion %}
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 填空题 </h3> </div>
+    {% for c in completion %}
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
+        <div><p>{{ c.description }}</p></div>
+        <div><p> 答案：</p><input type="text" name="completion_{{ c.id }}" value="{{ c.answer }}"></div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+    {% if true_or_false %}
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 判断题 </h3> </div>
+    {% for c in true_or_false %}
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
+        <div><p>{{ c.description }}</p></div>
+        <input type="radio" name="trueorfalse_{{ c.id }}" value="T" {% if c.answer == "T"%} checked {% endif %}> 正确 <br/>
+        <input type="radio" name="trueorfalse_{{ c.id }}" value="F" {% if c.answer == "F"%} checked {% endif %}> 错误 <br/>
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+    {% if program_correction %}
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 程序改错题 </h3> </div>
+    {% for p in program_correction %}
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
+        <div><p>{{ p.description }}</p></div>
+        <textarea name="programcorrection_{{ p.id }}" rows="30" cols="80"> {{ p.source_code }} </textarea>
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+    {% if program_reading %}
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 程序阅读题 </h3> </div>
+    {% for p in program_reading %}
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
+        <div><p>{{ p.description }}</p></div>
+        <div><p> 答案：</p><input type="text" name="programreading_{{ p.id }}" value="{{ c.answer }}"></div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+    {% if program_design %}
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 程序设计题 </h3> </div>
+    {% for p in program_design %}
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
+        <div><p>{{ p.description }}</p></div>
+        <textarea name="programdesign_{{ p.id }}" rows="30" cols="80"> {{ p.source_code }} </textarea>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <button class="btn mosh-btn mt-50" type="submit" name="submit">提交</button>
+    <button class="btn mosh-btn mt-50" type="submit" name="save">保存</button>
+</form>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ***** Contact Area End ***** -->
+{% endif %}
+
+{% endblock %}
