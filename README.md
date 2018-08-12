@@ -4,7 +4,7 @@
 
 旧版的README参见[README(v2)](docs/README_v2.md)
 
-操作手册参见[操作手册](docs/Mannual.md)
+操作手册参见[操作手册](docs/Mannual.md)或者[操作手册（PDF）](docs/Mannual.pdf)
 
 ## 简述
 
