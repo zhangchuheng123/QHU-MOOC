@@ -1,10 +1,10 @@
 # QHU-MOOC
 
-旧版的README参见[README(v1)](README_v1.md)
+旧版的README参见[README(v1)](docs/README_v1.md)
 
-旧版的README参见[README(v2)](README_v2.md)
+旧版的README参见[README(v2)](docs/README_v2.md)
 
-操作手册参见[操作手册](Mannual.md)
+操作手册参见[操作手册](docs/Mannual.md)
 
 ## 简述
 
