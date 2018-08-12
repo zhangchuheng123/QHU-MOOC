@@ -112,7 +112,8 @@ def check_problem_base(request):
                 problem = Problem(**d)
                 problem.save()
                 counter += 1
-        dangerousremove(joindir(path, file))
+        if isfile(joindir(path, file)):
+            dangerousremove(joindir(path, file))
     if counter > 0:
         messages.success(request, '成功添加{}个试题'.format(counter))
 
@@ -325,7 +326,7 @@ def generate_exam(exam):
     }
 
     # 选择题
-    problems = Problem.objects.filter(problem_type=0, tag=exam.tag_choice).order_by('?')[:exam.num_choice]
+    problems = Problem.objects.filter(problem_type=0, tag__in=exam.tag_choice.split(',')).order_by('?')[:exam.num_choice]
     for problem in problems:
         data['choice'].append({
             'id': problem.pid,
@@ -341,7 +342,7 @@ def generate_exam(exam):
         })
 
     # 填空题
-    problems = Problem.objects.filter(problem_type=1, tag=exam.tag_completion).order_by('?')[:exam.num_completion]
+    problems = Problem.objects.filter(problem_type=1, tag__in=exam.tag_completion.split(',')).order_by('?')[:exam.num_completion]
     for problem in problems:
         data['completion'].append({
             'id': problem.pid,
@@ -353,7 +354,7 @@ def generate_exam(exam):
         })
 
     # 判断题
-    problems = Problem.objects.filter(problem_type=2, tag=exam.tag_trueorfalse).order_by('?')[:exam.num_trueorfalse]
+    problems = Problem.objects.filter(problem_type=2, tag__in=exam.tag_trueorfalse.split(',')).order_by('?')[:exam.num_trueorfalse]
     for problem in problems:
         data['true_or_false'].append({
             'id': problem.pid,
@@ -365,7 +366,7 @@ def generate_exam(exam):
         })
 
     # 程序改错题
-    problems = Problem.objects.filter(problem_type=3, tag=exam.tag_programcorrection).order_by('?')[:exam.num_programcorrection]
+    problems = Problem.objects.filter(problem_type=3, tag__in=exam.tag_programcorrection.split(',')).order_by('?')[:exam.num_programcorrection]
     for problem in problems:
         data['program_correction'].append({
             'id': problem.pid,
@@ -377,7 +378,7 @@ def generate_exam(exam):
         })
 
     # 程序阅读题
-    problems = Problem.objects.filter(problem_type=4, tag=exam.tag_programreading).order_by('?')[:exam.num_programreading]
+    problems = Problem.objects.filter(problem_type=4, tag__in=exam.tag_programreading.split(',')).order_by('?')[:exam.num_programreading]
     for problem in problems:
         data['program_reading'].append({
             'id': problem.pid,
@@ -389,7 +390,7 @@ def generate_exam(exam):
         })
 
     # 程序设计题
-    problems = Problem.objects.filter(problem_type=5, tag=exam.tag_programdesign).order_by('?')[:exam.num_programdesign]
+    problems = Problem.objects.filter(problem_type=5, tag__in=exam.tag_programdesign.split(',')).order_by('?')[:exam.num_programdesign]
     for problem in problems:
         data['program_design'].append({
             'id': problem.pid,
@@ -408,7 +409,13 @@ def process_for_render(data):
     """
     total_num_problems = np.sum([len(data[item]) for item in problem_types])
     data.update({'total_num_problems': total_num_problems})
-        
+    counter = 1
+    num2chn = {1: '一、', 2: '二、', 3: '三、', 4: '四、', 5: '五、', 6: '六、'}
+    for item in problem_types:
+        if len(data[item]) > 0:
+            data.update({item + '_label': num2chn[counter]})
+            counter += 1
+    
     return data
 
 def post_to_answers(data, post):
@@ -539,10 +546,20 @@ def generate_total_score(data):
 @login_required
 def showall(request):
     data = {
-        'result': []
+        'result': [],
+        'exams': [],
+        'download_url': '/downloadscores',
     }
+    if 'id' in request.GET:
+        examname = request.GET['id']
+    else:
+        examname = None
     if request.user.is_staff:
-        results = ExamResult.objects.all()
+        if examname is None:
+            results = ExamResult.objects.all()
+        else:
+            results = ExamResult.objects.filter(examname=examname)
+            data['download_url'] += '?id={}'.format(examname)
         for result in results:
             tmp = result.data
             detail_score = { problem: np.sum([item['score'] for item in tmp[problem]]) for problem in problem_types}
@@ -552,6 +569,10 @@ def showall(request):
                 'score': float(result.score),
             })
             data['result'].append(detail_score)
+            
+        exams = Exam.objects.all()
+        for exam in exams:
+            data['exams'].append({'eid': exam.eid, 'name': exam.name})
     else:
         messages.error(request, '访问此页面需要管理员权限')
         return redirect('index')
@@ -559,10 +580,17 @@ def showall(request):
 
 @login_required
 def downloadscores(request):
+    if 'id' in request.GET:
+        examname = request.GET['id']
+    else:
+        examname = None
     if request.user.is_staff:
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="scores.csv"'
-        results = ExamResult.objects.all()
+        if examname is None:
+            results = ExamResult.objects.all()
+        else:
+            results = ExamResult.objects.filter(examname=examname)
         writer = csv.writer(response)
         writer.writerow(['用户名', '考试名', '总分', '选择题得分', '填空题得分', 
                          '判断题得分', '程序改错题得分', '程序阅读题得分', '程序设计题得分'])

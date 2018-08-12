@@ -3,6 +3,10 @@ from django.db import models
 from django_mysql.models import JSONField
 from django.contrib.auth.models import AbstractBaseUser, UserManager
 from django.contrib.auth.models import User
+from django.utils.html import format_html_join, linebreaks, format_html
+from django.utils.safestring import mark_safe
+import numpy as np
+import pdb
 
 class MyUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -17,6 +21,10 @@ class MyUser(models.Model):
     def __str__(self):
         return '【{:<20}】 class:{:<10} usertype:{:<5}'\
             .format(self.user.username, self.classes, '学生' if self.usertype == 1 else '教师')
+    
+    def username(self):
+        return self.user.username
+    username.short_description = '用户名'
     
 class Exam(models.Model):
     eid = models.CharField(max_length=200, verbose_name='考试唯一识别标志符')
@@ -50,6 +58,17 @@ class Exam(models.Model):
     def __str__(self):
         return '【{}】 eid: {} class:{}'.format(self.name, self.eid, self.classes)
     
+    def total_score(self):
+        return self.num_choice * self.point_choice + self.num_completion * self.point_completion \
+            + self.num_trueorfalse * self.point_trueorfalse + self.num_programcorrection * self.point_programcorrection \
+            + self.num_programreading * self.point_programreading + self.num_programdesign * self.point_programdesign
+    total_score.short_description = '总分'
+    
+    def notice_text(self):
+        return """1. 如果不设置某种题型，请在数量里面填写0，在标签中填写“-”
+        2. 分数一栏为每小题的分数"""
+    notice_text.short_description = '说明'
+    
 class Problem(models.Model):
 
     CHOICE = 0
@@ -70,14 +89,14 @@ class Problem(models.Model):
 
     pid = models.PositiveIntegerField(verbose_name='题目编号')
     description = models.TextField(verbose_name='题干描述')
-    template = models.TextField(verbose_name='程序模板（仅程序改错题）')
-    choice_A = models.CharField(max_length=400, verbose_name='A选项（仅选择题）')
-    choice_B = models.CharField(max_length=400, verbose_name='B选项（仅选择题）')
-    choice_C = models.CharField(max_length=400, verbose_name='C选项（仅选择题）')
-    choice_D = models.CharField(max_length=400, verbose_name='D选项（仅选择题）')
+    template = models.TextField(verbose_name='程序模板')
+    choice_A = models.CharField(max_length=400, verbose_name='A选项')
+    choice_B = models.CharField(max_length=400, verbose_name='B选项')
+    choice_C = models.CharField(max_length=400, verbose_name='C选项')
+    choice_D = models.CharField(max_length=400, verbose_name='D选项')
     answer = models.CharField(max_length=200, verbose_name='标准答案（除程序改错和设计）')
-    test_case_id = models.CharField(max_length=200, verbose_name='测试点id（仅程序改错和设计）')
-    tag = models.CharField(max_length=200, verbose_name='该题标签')
+    test_case_id = models.CharField(max_length=200, verbose_name='测试点id')
+    tag = models.CharField(max_length=200, verbose_name='标签')
     
     def __str__(self):
         return '【{}】 pid: {} tag:{}'.format(self.to_name(self.problem_type), self.pid, self.tag)
@@ -101,7 +120,7 @@ class ExamResult(models.Model):
     username = models.CharField(max_length=200, verbose_name='用户名')
     examname = models.CharField(max_length=200, verbose_name='考试名称')
     score = models.DecimalField(decimal_places=2, max_digits=5, default=0.0, verbose_name='总分')
-    exam = models.OneToOneField(Exam, on_delete=models.CASCADE, verbose_name='所属考试')
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE, verbose_name='所属考试')
     data = JSONField(blank=True, null=True, verbose_name='辅助数据（考试题目和用户答案）')
     UNSUBMITTED = 0
     SUBMITTED = 1
@@ -112,4 +131,20 @@ class ExamResult(models.Model):
     
     def __str__(self):
         return '【{} - {}】 score: {}'.format(self.username, self.examname, self.score if self.is_submitted == 1 else '未提交')
+    
+    def program_design_score(self):
+        if 'program_design' in self.data:
+            score = np.sum([i['score'] for i in self.data['program_design']])
+            full_score = np.sum([i['full_score'] for i in self.data['program_design']])
+            return '{}/{}'.format(score, full_score)
+        else:
+            return '-'
+    program_design_score.short_description = '程序设计题得分/总分'
+    
+    def source_code(self):
+        return format_html_join(
+            mark_safe('<br/>'), '<div> <div>id={}</div> <div>【submitted code】 <br/> {}</div> </div>',
+            ((i['id'], i['source_code'],) for i in self.data['program_design'])
+        )
+    source_code.short_description = '程序设计题手动阅卷'
     

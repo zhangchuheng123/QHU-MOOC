@@ -36,6 +36,7 @@
 {% if choice %}
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 选择题部分 </h3> </div>
 {% for c in choice %}
+{{forloop.counter}}.
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
     <div><p> 题库编号： {{ c.id }} </p></div>
     <div><p> 得分/总分： {{ c.score }} / {{ c.full_score }} </p></div>
@@ -46,6 +47,7 @@
 {% if completion %}
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 填空题部分 </h3> </div>
 {% for c in completion %}
+{{forloop.counter}}.
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
     <div><p> 题库编号： {{ c.id }} </p></div>
     <div><p> 得分/总分： {{ c.score }} / {{ c.full_score }} </p></div>
@@ -56,6 +58,7 @@
 {% if true_or_false %}
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 判断题部分 </h3> </div>
 {% for t in true_or_false %}
+{{forloop.counter}}.
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
     <div><p> 题库编号： {{ t.id }} </p></div>
     <div><p> 得分/总分： {{ t.score }} / {{ t.full_score }} </p></div>
@@ -66,6 +69,7 @@
 {% if program_correction %}
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 程序改错题部分 </h3> </div>
 {% for p in program_correction %}
+{{forloop.counter}}.
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
     <div><p> 题库编号： {{ p.id }} </p></div>
     <div><p> 得分/总分： {{ p.score }} / {{ p.full_score }} </p></div>
@@ -77,6 +81,7 @@
 {% if program_reading %}
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 程序阅读题部分 </h3> </div>
 {% for p in program_reading %}
+{{forloop.counter}}.
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
     <div><p> 题库编号： {{ p.id }} </p></div>
     <div><p> 得分/总分： {{ p.score }} / {{ p.full_score }} </p></div>
@@ -87,6 +92,7 @@
 {% if program_design %}
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 程序设计题部分 </h3> </div>
 {% for p in program_design %}
+{{forloop.counter}}.
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
     <div><p> 题库编号： {{ p.id }} </p></div>
     <div><p> 得分/总分： {{ p.score }} / {{ p.full_score }} </p></div>

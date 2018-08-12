@@ -26,6 +26,8 @@ urlpatterns = [
     url(r'^exam/(?P<id>\w{0,50})/', views.exam, name='exam'),
     url(r'^changepassword/', views.changepassword, name='changepassword'),
     url(r'^showall/', views.showall, name='showall'),
+    url(r'^showall/(?P<id>\w{0,50})/', views.exam, name='showall'),
     url(r'^downloadscores/', views.downloadscores, name='downloadscores'),
+    url(r'^downloadscores/(?P<id>\w{0,50})/', views.exam, name='downloadscores'),
     url(r'^$', views.index, name='index'),
 ]

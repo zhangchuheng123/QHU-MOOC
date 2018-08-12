@@ -29,33 +29,36 @@
     {% csrf_token %}
     
     {% if choice %}
-    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 选择题 </h3> </div>
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> {{choice_label}}选择题 </h3> </div>
     {% for c in choice %}
+    {{forloop.counter}}.
     <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
-        <p>{{ c.description }}</p>
-        <input type="radio" name="choice_{{ c.id }}" value="A" {% if c.answer == "A"%} checked {% endif %}> {{ c.A }} <br/>
-        <input type="radio" name="choice_{{ c.id }}" value="B" {% if c.answer == "B"%} checked {% endif %}> {{ c.B }} <br/>
-        <input type="radio" name="choice_{{ c.id }}" value="C" {% if c.answer == "C"%} checked {% endif %}> {{ c.C }} <br/>
-        <input type="radio" name="choice_{{ c.id }}" value="D" {% if c.answer == "D"%} checked {% endif %}> {{ c.D }} <br/>
+        <p>{{c.description|linebreaks}}</p>
+        <input type="radio" name="choice_{{ c.id }}" value="A" {% if c.answer == "A"%} checked {% endif %}> A. {{ c.A }} <br/>
+        <input type="radio" name="choice_{{ c.id }}" value="B" {% if c.answer == "B"%} checked {% endif %}> B. {{ c.B }} <br/>
+        <input type="radio" name="choice_{{ c.id }}" value="C" {% if c.answer == "C"%} checked {% endif %}> C. {{ c.C }} <br/>
+        <input type="radio" name="choice_{{ c.id }}" value="D" {% if c.answer == "D"%} checked {% endif %}> D. {{ c.D }} <br/>
     </div>
     {% endfor %}
     {% endif %}
     
     {% if completion %}
-    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 填空题 </h3> </div>
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> {{completion_label}}填空题 </h3> </div>
     {% for c in completion %}
+    {{forloop.counter}}.
     <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
-        <div><p>{{ c.description }}</p></div>
+        <div><p>{{ c.description|linebreaks }}</p></div>
         <div><p> 答案：</p><input type="text" name="completion_{{ c.id }}" value="{{ c.answer }}"></div>
     </div>
     {% endfor %}
     {% endif %}
     
     {% if true_or_false %}
-    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 判断题 </h3> </div>
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> {{true_or_false_label}}判断题 </h3> </div>
     {% for c in true_or_false %}
+    {{forloop.counter}}.
     <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
-        <div><p>{{ c.description }}</p></div>
+        <div><p>{{ c.description|linebreaks }}</p></div>
         <input type="radio" name="trueorfalse_{{ c.id }}" value="T" {% if c.answer == "T"%} checked {% endif %}> 正确 <br/>
         <input type="radio" name="trueorfalse_{{ c.id }}" value="F" {% if c.answer == "F"%} checked {% endif %}> 错误 <br/>
     </div>
@@ -63,30 +66,36 @@
     {% endif %}
     
     {% if program_correction %}
-    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 程序改错题 </h3> </div>
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> {{program_correction_label}}程序改错题 </h3> </div>
     {% for p in program_correction %}
+    {{forloop.counter}}.
     <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
-        <div><p>{{ p.description }}</p></div>
+        <div><p>{{ p.description|linebreaks }}</p></div>
         <textarea name="programcorrection_{{ p.id }}" rows="30" cols="80"> {{ p.source_code }} </textarea>
     </div>
     {% endfor %}
     {% endif %}
     
     {% if program_reading %}
-    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 程序阅读题 </h3> </div>
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> {{program_reading_label}}程序阅读题 </h3> </div>
     {% for p in program_reading %}
+    {{forloop.counter}}.
     <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
-        <div><p>{{ p.description }}</p></div>
-        <div><p> 答案：</p><input type="text" name="programreading_{{ p.id }}" value="{{ c.answer }}"></div>
+        <div><p>{{ p.description|linebreaks}}</p></div>
+        <div>
+            <p> 答案：</p>
+            <textarea name="programreading_{{ p.id }}" rows="2" cols="20"> {{ c.answer }} </textarea>
+        </div>
     </div>
     {% endfor %}
     {% endif %}
     
     {% if program_design %}
-    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> 程序设计题 </h3> </div>
+    <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> <h3> {{program_design_label}}程序设计题 </h3> </div>
     {% for p in program_design %}
+    {{forloop.counter}}.
     <div class="single-blog wow fadeInUp" data-wow-delay="0.1s">
-        <div><p>{{ p.description }}</p></div>
+        <div><p>{{ p.description|linebreaks }}</p></div>
         <textarea name="programdesign_{{ p.id }}" rows="30" cols="80"> {{ p.source_code }} </textarea>
     </div>
     {% endfor %}

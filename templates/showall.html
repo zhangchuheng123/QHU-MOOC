@@ -24,6 +24,21 @@
 <div class="col-12 col-md-8">
 <div class="mosh-blog-posts">
     
+<section class="elements-area section_padding_100">
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> 
+<div class="container">
+	<ol>
+        <li><img src="{% static "img/core-img/edit.png" %}" alt="" width="10">
+            <a href='/showall'>全部考试</a></li>
+		{% for exam in exams %}
+		<li><img src="{% static "img/core-img/edit.png" %}" alt="" width="10">
+            <a href='/showall?id={{ exam.eid }}'>{{ exam.name }} ({{ exam.eid }}) </a></li>
+		{% endfor %}
+	</ol>
+</div>
+</div>
+</section>
+    
 <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> 
     <div class="xxxtable">
     <div class="xxxrow header blue">
@@ -54,7 +69,7 @@
 </div>
     
     <div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> 
-        <a href="{% url 'downloadscores' %}">下载CSV成绩统计表</a> 
+        <a href='{{ download_url }}'>下载CSV成绩统计表</a> 
     </div>
     
 </div>

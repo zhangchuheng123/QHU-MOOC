@@ -10,7 +10,10 @@
 :: Created: 01/02/2018
 ------------------------------------------------ */
 
+/* 
+too slow, removed
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700,900');
+*/
 
 @import 'css/bootstrap.min.css';
 @import 'css/owl.carousel.min.css';
