@@ -1,96 +1,27 @@
-# QHU-MOOC
+# QHU-MOOC系统操作手册
 
-## 简述
+## 概览
 
-该项目是在青海大学暑期社会实践期间的工作，任务由青海大学计算机技术与应用系提出，主要目的是为其程序设计课程设计一套系统，供学生考试和作业使用。限于实践的时间，本系统旨在使用最为简单的方式来实现青海大学所需功能，并且为后续的拓展提供良好的基础。
+本系统主要设计了四种数据模型，它们分别是：
 
-## 功能
+* 用户(MyUser)：用户管理，包括用户名、密码、分组等；
+* 题库(Problem)：一共设计了选择题、填空题、判断题、程序改错题、程序阅读题、程序设计题等六类题型，在该数据模型下可以进行题库管理；
+* 考试(Exam)：管理每次考试的组卷；
+* 考试结果(ExamResult)：每个考生每次考试的考试结果；
 
-本项目主要实现所需的以下功能：
-
-* 用户管理：
-    - 教师可以批量导入学生的账号和初始密码
-    - 学生可以自行修改自己的密码
-    - 教师可以对整体进行管理，学生只能查看到自己班级所属的考试（作业）并且参加考试（作业）
-* 核心功能：
-    - 实现选择题、填空题、判断题、程序改错题、程序阅读题和程序设计题等六种题型
-    - 每种题型可以设立相应的题库，每次考试（作业）都从提供中选取内容相符的题目进行随机组卷
-    - 实现题目的自动判题，其中程序改错题和程序设计题需要运行学生提交的代码，通过测试样例的形式进行评卷；评卷按照测试点给分（即IO模式，非ACM模式）
-    - 对于测试样例编译未通过或者结果不正确的学生，可以对其手动阅卷（暂未实现）
-    - 教师能够查看学生的考试成绩，并且批量导出
-* 非核心功能：
-    - 界面友好整洁
-    - 题目显示清晰，教师操作方便
-    
-## 前期调研与相关工作
-
-本系统的难点在于
-
-1. 后台需要调用OnlineJudge进行判题；
-2. 需要有一个可靠的框架来实现前后端的逻辑；
-
-对于第一个难点，由于其中涉及到各类编译器配置以及对于提交程序的安全配置（为了不让用户提交的有害代码的运行损害服务器），经过调研，认为自己进行独立开发十分困难，因此打算选取网上已有的开源方案。
-
-我们调研到的第一个框架是[HUSTOJ](https://github.com/zhblue/hustoj)，该框架的判题后端是使用C++开发的一个服务器进程，该进程对于服务器中MySQL中的某一个表进行轮询，当发现新的用户提交代码的时候就对其进行编译运行并与相应测试点标准输出进行比对。该框架的网页部分使用PHP开发，实现了一个OJ系统的各类功能，包括题目展示、用户管理、代码提交、代码测评、组织比赛等。我们使用的时候遇到的问题是，后台的判题进程挂起之后并不能正常地进行判题，由于本人对于C++以及PHP都不是很熟悉，因此放弃了该框架。
-
-我们调研到的第二个框架是[xuejing80's HUSTOJ](https://github.com/xuejing80/hustoj)（其实际运行的平台[南京邮电大学程序设计类课程作业平台](https://c.njupt.edu.cn)），该框架后台判题服务仍然基于HUSTOJ，只不过网页展示部分使用了Django框架。经过对其源码的研读，认为其目的和青海大学计算机系这边的目标一致，所实现的功能和这边的需求重合度较高。再加上本人对于python比较熟悉，因此前期决定在此项目基础上进行开发。在实际部署之后遇到了用户无法注册、判题机无法运行、测试用例无法上传等问题。由于系统较为复杂，本人无法在短时间内进行消化分析，并且判题机的数据库轮询机制使得开发调试较为困难，因此也放弃了这个框架。
-
-经过康路师兄的推荐，我们找到了第三个框架[QingdaoU's OnlineJudge](https://github.com/QingdaoU/OnlineJudgeDeploy)。基于以下考虑，我们最后使用了该框架作为判题机后端：
-
-1. 该框架基于python开发，其自带的网页部分也是用Django开发，个人较为熟悉；
-2. 其机制为server-client模式，判题机与网站系统相互独立，模块化调试部署较为容易；
-3. 相比于HUSTOJ，提供了较为详细的[JudgeServer API文档](https://docs.onlinejudge.me/#/judgeserver/api)；
-4. 使用了docker进行部署，一键完成，减小部署配置不兼容导致失败的可能性；
-
-由于其QingdaoU OnlineJudge的网站部分的目标主要是进行OJ的训练和比赛，和我们的需求不符，因此，对于网站部分我决定使用Django从头开始进行开发。
-
-## 框架设计
-
-限于时间，如果题库的管理和上传、用户的管理、测试点数据的管理和上传等都需要在网页端实现的话，开发量比较大，因此这里暂且主要采用文件的形式来管理题库、试题、测试点，而用户和用户的考试结果等必须使用数据库实现的才使用数据库实现。大致框架如下：
-
-```
-FILES
-    + data
-    |----+ problems
-    |    |----+ Choice.csv                  id  description     A   B   C   D       answer          tag
-    |    |----+ Completion.csv              id  description(with blank label)       answer          tag
-    |    |----+ TrueOrFalse.csv             id  description                         answer          tag
-    |    |----+ ProgramCorrection.csv       id  description     template            test_case_id    tag
-    |    |----+ ProgramReading.csv          id  description                         answer          tag
-    |    |----+ ProgramDesign.csv           id  description(include sample in/out)  test_case_id    tag
-    |----+ users
-    |    |----+ add_users.csv               username    password    classes     usertype
-    |----+ exams
-    |    |----+ exam_name.json              (num_choice point_choice tag_choice) * 5    classes
-    |----+ test_cases
-    |    |----+ <test_case_id>
-    |    |    |----+ 1.in
-    |    |    |----+ 1.out
-    |    |    |----+ info
-
-DB
-    users                   username    password    class   user_type
-    exam_result             username    examname   answers(JSON)     detail_scores(JSON)    score
-
-PAGES
-    index                   : after index visited check add_users.csv add and delete
-    login                   : login
-    logout                  : logout
-    changepassword          : change password 
-    examlist                : get user's class and find exams with this class
-    exam?id=<examname>      : load exam / judge and show exam result for this user
-    showall                 : show all the (user, exam) results for teachers
-    downloadscores          : download all the (user, exam) results as csv for teachers
-
-TEMPLATES
-    mosh from https://colorlib.com/
-```
+关于这些类型的具体结构参见``backend/models.py``中的定义。
 
 ## 操作说明
 
 ### 导入用户
 
-放置``add_users.csv``到``data/users/``目录下，主要字段有``username, password, usertype, classes``，详细格式和文件编码参见``init.py``。放置在此文件夹下的文件会在第一次访问index页面之后被添加到数据库中，并且将改文件删除，**请做好文件备份**。
+方式一：登陆后台增加用户
+
+登陆管理员账户 - 页面右上方”管理页面“ - “backend：MyUser”
+
+![](docs/figures/add_user.png)
+
+方式二：放置``add_users.csv``到``data/users/``目录下，主要字段有``username, password, usertype, classes``，详细格式和文件编码参见``init.py``。放置在此文件夹下的文件会在第一次访问index页面之后被添加到数据库中，并且将改文件删除，**请做好文件备份**。
 
 ![](docs/figures/index.png)
 
@@ -102,12 +33,17 @@ TEMPLATES
 
 ### 添加考试
 
-放置``<exam_name>.json``到``data/exams/``目录下，主要字段见``init.py``，其主要规定了各类题型的题目数量和分数。
+方式一：登陆后台增加考试（推荐）
 
+![](docs/figures/add_exam.png)
+
+方式二：放置``<exam_name>.json``到``data/exams/``目录下，主要字段见``init.py``，其主要规定了各类题型的题目数量和分数。
 
 ### 管理题库
 
-题库是在``data/problems/``目录下的六个csv文件，文件的每一行代表一个题目，具体格式见``init.py``，其主要规定了题目的ID、题干、答案、题目所属班级。
+方式一：登陆后台管理（推荐）
+
+方式二：题库是在``data/problems/``目录下的六个csv文件，文件的每一行代表一个题目，具体格式见``init.py``，其主要规定了题目的ID、题干、答案、题目所属班级。
 * 登陆：主页登陆之后右上角会有登陆按钮，点击即可登陆。初始密码参见教师添加的初始密码。
 
 ![](docs/figures/login.png)
@@ -133,7 +69,7 @@ TEMPLATES
 ![](docs/figures/teacher_index.png)
 ![](docs/figures/showall.png)
 
-### 这里暂时只能使用Jupyter来上传管理用户、测试点、题库和考试
+### 使用Jupyter来上传管理用户、测试点、题库和考试（同样可以用管理员页面来进行管理）
 
 ![](docs/figures/jupyter.png)
 
@@ -205,7 +141,7 @@ Django里面提供了自带的User类``django.contrib.auth.models.User``，但�
 
 ## 未来改进
 
-1. 开发用户管理、题库管理、考试管理、测试点管理的页面，把相应的内容全部挪到网页端完成，使用数据库储存全部数据；
+1. 开发测试点管理的页面，把相应的内容挪到网页端完成，使用数据库储存全部数据；
 1. 增加考试和作业的个性化定制程度，比如可以随机组卷也可以固定选题组卷、学生可以使用不同的语言来进行编程、考试过程中的定时完成、作业中设置截止日期等；
 1. 更加友好的UI设计，比如考试结果展示的更加详细、题目的展示更加友好、浏览器中的代码提供语法高亮等；
 1. 增加更多慕课相关的功能，比如课程通知、课程讨论、课程笔记等；

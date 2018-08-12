@@ -1,8 +1,4 @@
-# QHU-MOOC
-
-旧版的README参见[README(v1)](README_v1.md)
-旧版的README参见[README(v2)](README_v2.md)
-操作手册参见[操作手册](Mannual.md)
+# QHU-MOOC-v1
 
 ## 简述
 
@@ -48,9 +44,98 @@
 
 由于其QingdaoU OnlineJudge的网站部分的目标主要是进行OJ的训练和比赛，和我们的需求不符，因此，对于网站部分我决定使用Django从头开始进行开发。
 
-## 数据库设计
+## 框架设计
 
-主要设计了用户(MyUser)、题库(Problem)、考试(Exam)、考试结果(ExamResult)几种数据类型。具体结构参见``backend/models.py``中的具体定义。
+限于时间，如果题库的管理和上传、用户的管理、测试点数据的管理和上传等都需要在网页端实现的话，开发量比较大，因此这里暂且主要采用文件的形式来管理题库、试题、测试点，而用户和用户的考试结果等必须使用数据库实现的才使用数据库实现。大致框架如下：
+
+```
+FILES
+    + data
+    |----+ problems
+    |    |----+ Choice.csv                  id  description     A   B   C   D       answer          tag
+    |    |----+ Completion.csv              id  description(with blank label)       answer          tag
+    |    |----+ TrueOrFalse.csv             id  description                         answer          tag
+    |    |----+ ProgramCorrection.csv       id  description     template            test_case_id    tag
+    |    |----+ ProgramReading.csv          id  description                         answer          tag
+    |    |----+ ProgramDesign.csv           id  description(include sample in/out)  test_case_id    tag
+    |----+ users
+    |    |----+ add_users.csv               username    password    classes     usertype
+    |----+ exams
+    |    |----+ exam_name.json              (num_choice point_choice tag_choice) * 5    classes
+    |----+ test_cases
+    |    |----+ <test_case_id>
+    |    |    |----+ 1.in
+    |    |    |----+ 1.out
+    |    |    |----+ info
+
+DB
+    users                   username    password    class   user_type
+    exam_result             username    examname   answers(JSON)     detail_scores(JSON)    score
+
+PAGES
+    index                   : after index visited check add_users.csv add and delete
+    login                   : login
+    logout                  : logout
+    changepassword          : change password 
+    examlist                : get user's class and find exams with this class
+    exam?id=<examname>      : load exam / judge and show exam result for this user
+    showall                 : show all the (user, exam) results for teachers
+    downloadscores          : download all the (user, exam) results as csv for teachers
+
+TEMPLATES
+    mosh from https://colorlib.com/
+```
+
+## 操作说明
+
+### 导入用户
+
+放置``add_users.csv``到``data/users/``目录下，主要字段有``username, password, usertype, classes``，详细格式和文件编码参见``init.py``。放置在此文件夹下的文件会在第一次访问index页面之后被添加到数据库中，并且将改文件删除，**请做好文件备份**。
+
+![](docs/figures/index.png)
+
+### 添加测试点
+
+放置测试点文件``1.in``、``1.out``等到``data/test_case/<test_case_id>``下，在下一次访问index页面之后，会自动生成相应的该测试点info文件，info文件为判题机的主要判题依据。需要注意的是测试点应该以数字命名，并且从1开始。
+
+![](docs/figures/index_testcase.png)
+
+### 添加考试
+
+放置``<exam_name>.json``到``data/exams/``目录下，主要字段见``init.py``，其主要规定了各类题型的题目数量和分数。
+
+
+### 管理题库
+
+题库是在``data/problems/``目录下的六个csv文件，文件的每一行代表一个题目，具体格式见``init.py``，其主要规定了题目的ID、题干、答案、题目所属班级。
+* 登陆：主页登陆之后右上角会有登陆按钮，点击即可登陆。初始密码参见教师添加的初始密码。
+
+![](docs/figures/login.png)
+
+### 修改密码
+
+登陆之后会有修改密码的界面，输入旧密码和新密码即可修改。
+
+![](docs/figures/changepassword.png)
+
+### 参加考试（作业）
+
+登陆之后会显示考试列表，点击进入之后即可参加相应的考试；考试做题的过程中请及时点击保存，保存之后的答案在下一次该用户进入该页面的时候会自动显示，没有保存的内容再刷新页面之后会消失，**请及时保存**；点击提交之后即代表完成此次考试（作业），页面会跳转到显示分数的页面，**提交之后不能再次返回写作业**。
+
+![](docs/figures/exam_list.png)
+![](docs/figures/exam.png)
+![](docs/figures/exam_submit.png)
+
+### 查看考试分数统计
+
+教师登陆之后有成绩汇总页面，在此页面可以查看成绩并且下载汇总表格。
+
+![](docs/figures/teacher_index.png)
+![](docs/figures/showall.png)
+
+### 这里暂时只能使用Jupyter来上传管理用户、测试点、题库和考试
+
+![](docs/figures/jupyter.png)
 
 ## 学习心得与排坑
 
@@ -118,26 +203,9 @@ Django里面提供了自带的User类``django.contrib.auth.models.User``，但�
 
 我看了一下，migration的机制是为了在开发过程中可能对于数据库表的格式进行改变时能够对于数据库进行相应的处理，我们的项目相对来讲比较简单，因此基本上用不到其复杂的功能，我们更希望的是，每次更新之后把数据库全部删掉然后重新建立。因此我们写了``reset.sh``脚本进行此操作，在安装的时候也同样运行此脚本。参考这个[帖子](https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html)。
 
-### 问题6：在无法连接外网的时候页面打开极慢
-
-通过使用Chrome浏览器的开发者工具，发现是在访问``https://fonts.googleapis.com/css?family=Roboto:400,500,700,900``的时候卡住了，发现``static/style.css``下面有加载字体的语句``@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700,900');``，但其实实质上没有用到，注释之后解决了问题。
-
-### 改进：
-
-经过和青海大学贾金芳老师的讨论之后，提出了如下修改已经，已经实现
-* 选择题需要在前面标记ABCD序号：在``templates/exam.html``中修改即可
-* 小题前标阿拉伯数字题号，自动按顺序标注：django的模板中带有``{{forloop.counter}}``功能用于计数，加上即可
-* 大类的题目标注中文数字，自动按顺序标注：由于需要中文标注，需要在程序部分``backend/views.py``中修改
-* 程序阅读题目输出需要可以换行，判卷方式使用去掉空白字符之后进行字符串比较：在``templates/exam.html``中修改``<input>``为``<textarea>``即可
-* 组卷章节可以从多个章节的题目中选择：组卷的时候tag改成逗号分隔的多个关键字，在题库的选择中可以使用``Class.objects.filter(key__in=[xx, xx])``方式来选择
-* 360极速浏览器无法Jupyter上传：设置-高级设置-内核切换-webkit
-* 优化添加考试界面可读性：添加考试页面增加了说明和分组
-* 优化手动阅卷的可操作性：在admin的列表中显示程序设计类题目的实际得分和该题的总分，在admin的编辑界面显示该题的实际得分和该题的总分
-* 分数汇总界面可以按照考试筛选成绩汇总：修改``showall``和``download``页面的逻辑和模板
-* 新增操作文档：github readme/PDF
-
 ## 未来改进
 
+1. 开发用户管理、题库管理、考试管理、测试点管理的页面，把相应的内容全部挪到网页端完成，使用数据库储存全部数据；
 1. 增加考试和作业的个性化定制程度，比如可以随机组卷也可以固定选题组卷、学生可以使用不同的语言来进行编程、考试过程中的定时完成、作业中设置截止日期等；
 1. 更加友好的UI设计，比如考试结果展示的更加详细、题目的展示更加友好、浏览器中的代码提供语法高亮等；
 1. 增加更多慕课相关的功能，比如课程通知、课程讨论、课程笔记等；
