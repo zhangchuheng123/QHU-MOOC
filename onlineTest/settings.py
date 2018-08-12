@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'f*7jk*lc#7yrf$&vmj4@2a^&&@3*+crat&r*#o*yd+!-^8^rc('
+SECRET_KEY = 'xxxxxxxx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,7 +32,7 @@ MACHINE = 'QHU'
 if MACHINE == 'THU':
     ALLOWED_HOSTS = ['x.x.x.x']
 elif MACHINE == 'QHU':
-    ALLOWED_HOSTS = ['49.209.80.158']
+    ALLOWED_HOSTS = ['x.x.x.x']
 
 
 # Application definition
@@ -96,8 +96,8 @@ if MACHINE == 'THU':
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'QHUMOOC',
-            'USER': 'debian-sys-maint',
-            'PASSWORD': 'HrQnd5FpG5its3Dz',
+            'USER': 'xxxxxxxx',
+            'PASSWORD': 'xxxxxxxx',
             'HOST': '',
             'PORT': '',
         }
@@ -107,8 +107,8 @@ elif MACHINE == 'QHU':
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'QHUMOOC',
-            'USER': 'debian-sys-maint',
-            'PASSWORD': 'nRh1hkv7qJAaVmoB',
+            'USER': 'xxxxxxxx',
+            'PASSWORD': 'xxxxxxxx',
             'HOST': '',
             'PORT': '',
         }

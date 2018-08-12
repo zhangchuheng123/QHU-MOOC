@@ -21,7 +21,7 @@ python3 init.py
 # drop database
 echo "drop database"
 USER='debian-sys-maint'
-PASS='nRh1hkv7qJAaVmoB'
+PASS='xxxxxxxx'
 echo "drop database QHUMOOC;" | mysql -h localhost -u$USER -p$PASS
 
 # reinstall database
