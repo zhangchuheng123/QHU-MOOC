@@ -54,23 +54,23 @@
 
 方式一：登陆后台增加用户
 
-![](docs/figures/add_user.png)
+![](figures/add_user.png)
 
 方式二：放置``add_users.csv``到``data/users/``目录下，主要字段有``username, password, usertype, classes``，详细格式和文件编码参见``init.py``。放置在此文件夹下的文件会在第一次访问index页面之后被添加到数据库中，并且将改文件删除，**请做好文件备份**。
 
-![](docs/figures/index.png)
+![](figures/index.png)
 
 ### 添加测试点
 
 放置测试点文件``1.in``、``1.out``等到``data/test_case/<test_case_id>``下，在下一次访问index页面之后，会自动生成相应的该测试点info文件，info文件为判题机的主要判题依据。需要注意的是测试点应该以数字命名，并且从1开始。
 
-![](docs/figures/index_testcase.png)
+![](figures/index_testcase.png)
 
 ### 添加考试
 
 方式一：登陆后台增加考试（推荐）
 
-![](docs/figures/add_exam.png)
+![](figures/add_exam.png)
 
 方式二：放置``<exam_name>.json``到``data/exams/``目录下，主要字段见``init.py``，其主要规定了各类题型的题目数量和分数。
 
@@ -81,32 +81,32 @@
 方式二：题库是在``data/problems/``目录下的六个csv文件，文件的每一行代表一个题目，具体格式见``init.py``，其主要规定了题目的ID、题干、答案、题目所属班级。
 * 登陆：主页登陆之后右上角会有登陆按钮，点击即可登陆。初始密码参见教师添加的初始密码。
 
-![](docs/figures/login.png)
+![](figures/login.png)
 
 ### 修改密码
 
 登陆之后会有修改密码的界面，输入旧密码和新密码即可修改。
 
-![](docs/figures/changepassword.png)
+![](figures/changepassword.png)
 
 ### 参加考试（作业）
 
 登陆之后会显示考试列表，点击进入之后即可参加相应的考试；考试做题的过程中请及时点击保存，保存之后的答案在下一次该用户进入该页面的时候会自动显示，没有保存的内容再刷新页面之后会消失，**请及时保存**；点击提交之后即代表完成此次考试（作业），页面会跳转到显示分数的页面，**提交之后不能再次返回写作业**。
 
-![](docs/figures/exam_list.png)
-![](docs/figures/exam.png)
-![](docs/figures/exam_submit.png)
+![](figures/exam_list.png)
+![](figures/exam.png)
+![](figures/exam_submit.png)
 
 ### 查看考试分数统计
 
 教师登陆之后有成绩汇总页面，在此页面可以查看成绩并且下载汇总表格。
 
-![](docs/figures/teacher_index.png)
-![](docs/figures/showall.png)
+![](figures/teacher_index.png)
+![](figures/showall.png)
 
 ### 使用Jupyter来上传管理用户、测试点、题库和考试（同样可以用管理员页面来进行管理）
 
-![](docs/figures/jupyter.png)
+![](figures/jupyter.png)
 
 ## 学习心得与排坑
 
