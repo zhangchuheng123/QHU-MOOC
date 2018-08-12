@@ -1,7 +1,9 @@
 # QHU-MOOC
 
 旧版的README参见[README(v1)](README_v1.md)
+
 旧版的README参见[README(v2)](README_v2.md)
+
 操作手册参见[操作手册](Mannual.md)
 
 ## 简述
@@ -122,6 +124,10 @@ Django里面提供了自带的User类``django.contrib.auth.models.User``，但�
 
 通过使用Chrome浏览器的开发者工具，发现是在访问``https://fonts.googleapis.com/css?family=Roboto:400,500,700,900``的时候卡住了，发现``static/style.css``下面有加载字体的语句``@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700,900');``，但其实实质上没有用到，注释之后解决了问题。
 
+### 问题7：``pip freeze > requirement.txt``生成的依赖列表包括项目不需要的依赖项
+
+参考[stackoverflow](https://stackoverflow.com/questions/31684375/automatically-create-requirements-txt)，使用pipreqs解决。
+
 ### 改进：
 
 经过和青海大学贾金芳老师的讨论之后，提出了如下修改已经，已经实现
@@ -132,7 +138,7 @@ Django里面提供了自带的User类``django.contrib.auth.models.User``，但�
 * 组卷章节可以从多个章节的题目中选择：组卷的时候tag改成逗号分隔的多个关键字，在题库的选择中可以使用``Class.objects.filter(key__in=[xx, xx])``方式来选择
 * 360极速浏览器无法Jupyter上传：设置-高级设置-内核切换-webkit
 * 优化添加考试界面可读性：添加考试页面增加了说明和分组
-* 优化手动阅卷的可操作性：在admin的列表中显示程序设计类题目的实际得分和该题的总分，在admin的编辑界面显示该题的实际得分和该题的总分
+* 优化手动阅卷的可操作性：在admin的列表中显示程序设计类题目的实际得分和该题的总分，在admin的编辑界面显示该题的实际得分和该题的总分，用户作答程序显示更加友好
 * 分数汇总界面可以按照考试筛选成绩汇总：修改``showall``和``download``页面的逻辑和模板
 * 新增操作文档：github readme/PDF
 

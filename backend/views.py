@@ -205,7 +205,7 @@ def examlist(request):
     显示考试列表，显示考试班级和用户班级相同的考试，并且装到dict里面传递给render
     """
     # get user's classes id
-    if request.user.is_staff:
+    if request.user.is_staff == 1 or request.user.myuser.usertype == 2:
         # represent match any classes
         user_classes = None
     else:
@@ -242,7 +242,7 @@ def exam(request):
             exam_id = request.GET['id']
 
             # get user's classes id
-            if request.user.is_staff:
+            if request.user.is_staff == 1 or request.user.myuser.usertype == 2:
                 # represent match any classes
                 user_classes = None
             else:
@@ -554,7 +554,7 @@ def showall(request):
         examname = request.GET['id']
     else:
         examname = None
-    if request.user.is_staff:
+    if request.user.is_staff == 1 or request.user.myuser.usertype == 2:
         if examname is None:
             results = ExamResult.objects.all()
         else:
@@ -584,7 +584,7 @@ def downloadscores(request):
         examname = request.GET['id']
     else:
         examname = None
-    if request.user.is_staff:
+    if request.user.is_staff == 1 or request.user.myuser.usertype == 2:
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="scores.csv"'
         if examname is None:
@@ -605,6 +605,27 @@ def downloadscores(request):
     else:
         messages.error(request, '访问此页面需要管理员权限')
         return redirect('index')
+    
+@login_required
+def exportdata(request):
+    """
+    导出数据：弃用
+    """
+    if 'id' in request.GET:
+        dataid = request.GET['id']
+    else:
+        dataid = None
+        
+    if not (request.user.is_staff == 1 or request.user.myuser.usertype == 2):
+        messages.error(request, '访问此页面需要管理员权限')
+        return redirect('index')
+    
+    if dataid is None:
+        return render(request, 'exportdata.html')
+    else:
+        response = HttpResponse(content_type='text/csv')
+        raise NotImplementedError
+        return response
         
 def result_code_decode(code):
     """
@@ -743,7 +764,7 @@ def exam_legency(request):
             exam_id = request.GET['id']
 
             # get user's classes id
-            if request.user.is_staff:
+            if request.user.is_staff == 1 or request.user.myuser.usertype == 2:
                 # represent match any classes
                 user_classes = None
             else:
@@ -828,7 +849,7 @@ def examlist_legency(request):
     """
     path = 'data/exams'
     # get user's classes id
-    if request.user.is_staff:
+    if request.user.is_staff == 1 or request.user.myuser.usertype == 2:
         # represent match any classes
         user_classes = None
     else:
@@ -848,3 +869,5 @@ def examlist_legency(request):
     exam_list = [{'name': j['name'], 'id': j['id']} for j in exam_jsons]
     
     return render(request, 'examlist.html', {'exam_list': exam_list})
+
+

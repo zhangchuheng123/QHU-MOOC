@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}考试/作业提交{% endblock %}
+{% block container %}
+
+<!-- ***** Breadcumb Area Start ***** -->
+<div class="mosh-breadcumb-area" style="background-image: url({% static "img/core-img/breadcumb.png" %});">
+<div class="container h-100">
+<div class="row h-100 align-items-center">
+<div class="col-12">
+    <div class="bradcumbContent">
+        <h2>导出数据</h2>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<!-- ***** Breadcumb Area End ***** -->
+
+<!-- ***** Blog Area Start ***** -->
+<section class="blog-area section_padding_100">
+<div class="container">
+<div class="row">
+<div class="col-12 col-md-8">
+<div class="mosh-blog-posts">
+    
+<section class="elements-area section_padding_100">
+<div class="single-blog wow fadeInUp" data-wow-delay="0.1s"> 
+<div class="container">
+    <ol>
+        <li><img src="{% static "img/core-img/edit.png" %}" alt="" width="10">
+            <a href='/exportdata?id=user'>用户</a></li>
+        <li><img src="{% static "img/core-img/edit.png" %}" alt="" width="10">
+            <a href='/exportdata?id=choice'>选择题库</a></li>
+        <li><img src="{% static "img/core-img/edit.png" %}" alt="" width="10">
+            <a href='/exportdata?id=choice'>填空题库</a></li>
+        <li><img src="{% static "img/core-img/edit.png" %}" alt="" width="10">
+            <a href='/exportdata?id=choice'>判断题库</a></li>
+        <li><img src="{% static "img/core-img/edit.png" %}" alt="" width="10">
+            <a href='/exportdata?id=choice'>程序改错题库</a></li>
+        <li><img src="{% static "img/core-img/edit.png" %}" alt="" width="10">
+            <a href='/exportdata?id=choice'>程序阅读题库</a></li>
+        <li><img src="{% static "img/core-img/edit.png" %}" alt="" width="10">
+            <a href='/exportdata?id=choice'>程序设计题库</a></li>
+    </ol>
+</div>
+</div>
+</section>
+    
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ***** Contact Area End ***** -->
+
+{% endblock %}

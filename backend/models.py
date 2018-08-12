@@ -143,8 +143,8 @@ class ExamResult(models.Model):
     
     def source_code(self):
         return format_html_join(
-            mark_safe('<br/>'), '<div> <div>id={}</div> <div>【submitted code】 <br/> {}</div> </div>',
-            ((i['id'], i['source_code'],) for i in self.data['program_design'])
-        )
+            mark_safe('<br/>'), '<div> <div>id={}</div> <div>score/full score: {}/{}</div> <div> 【submitted code】</div> <div style="border-style: solid;"> {}</div> </div>',
+            ((i['id'], i['score'], i['full_score'], mark_safe(linebreaks(i['source_code'])),) for i in self.data['program_design'])
+        ) 
     source_code.short_description = '程序设计题手动阅卷'
     

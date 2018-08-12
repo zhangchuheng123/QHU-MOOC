@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^showall/', views.showall, name='showall'),
     url(r'^showall/(?P<id>\w{0,50})/', views.exam, name='showall'),
     url(r'^downloadscores/', views.downloadscores, name='downloadscores'),
-    url(r'^downloadscores/(?P<id>\w{0,50})/', views.exam, name='downloadscores'),
+    url(r'^downloadscores/(?P<id>\w{0,50})/', views.downloadscores, name='downloadscores'),
+    url(r'^exportdata/', views.exportdata, name='exportdata'),
+    url(r'^exportdata/(?P<id>\w{0,50})/', views.exportdata, name='exportdata'),
     url(r'^$', views.index, name='index'),
 ]

@@ -1,9 +1,9 @@
 # shut down docker and relaunch
-# echo "shut down docker and relaunch"
-# docker rm -f judge-server
-# cd judge
-# docker-compose up -d
-# cd ..
+echo "shut down docker and relaunch"
+docker rm -f judge-server
+cd judge
+docker-compose up -d
+cd ..
 
 # remove migration files
 echo "remove migration files"

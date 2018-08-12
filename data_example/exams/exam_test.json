@@ -1,0 +1,22 @@
+{
+    "name": "\u7b2c\u4e00\u6b21\u6d4b\u8bd5",
+    "num_choice": 10,
+    "point_choice": 1,
+    "tag_choice": "C_class",
+    "num_completion": 10,
+    "point_completion": 1,
+    "tag_completion": "C_class",
+    "num_trueorfalse": 10,
+    "point_trueorfalse": 1,
+    "tag_trueorfalse": "C_class",
+    "num_programcorrection": 2,
+    "point_programcorrection": 5,
+    "tag_programcorrection": "C_class",
+    "num_programreading": 2,
+    "point_programreading": 5,
+    "tag_programreading": "C_class",
+    "num_programdesign": 2,
+    "point_programdesign": 25,
+    "tag_programdesign": "C_class",
+    "classes": "C_class"
+}
