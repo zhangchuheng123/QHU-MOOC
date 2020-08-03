@@ -1,5 +1,5 @@
 requests==2.18.4
-Django==2.0.7
+Django==2.2.13
 pandas==0.23.1
 django_mysql==2.3.0
 numpy==1.14.5
